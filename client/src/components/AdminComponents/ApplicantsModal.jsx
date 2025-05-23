@@ -35,7 +35,7 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
  const fetchApplicants = async () => {
   try {
     const token = localStorage.getItem('adminToken');
-    const res = await fetch(`http://localhost:5000/api/admin/jobs/${job._id}/applicants`, {
+    const res = await fetch(`https://jobportal-xqgm.onrender.com/api/admin/jobs/${job._id}/applicants`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
