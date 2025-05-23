@@ -18,7 +18,7 @@ const SubmitAuthRequestModal = ({ field, onClose, refetchProfile }) => {
 
     try {
       const token = localStorage.getItem("studentToken");
-      const res = await fetch("http://localhost:5000/api/student/authrequest", {
+      const res = await fetch("https://jobportal-xqgm.onrender.com/api/student/authrequest", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
