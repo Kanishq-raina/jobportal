@@ -68,7 +68,7 @@ const JobCard = ({ job, onApply, isEligible, ineligibleReasons }) => {
       >
         <div className="flex items-center gap-4 mb-4">
           <img
-            src={job.logo ? `http://localhost:5000${job.logo}` : "/default-logo.png"}
+            src={job.logo ? `https://jobportal-xqgm.onrender.com${job.logo}` : "/default-logo.png"}
             alt={`${job.title} logo`}
             className="w-16 h-16 object-cover rounded-full border border-gray-400"
           />
