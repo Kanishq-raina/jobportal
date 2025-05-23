@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .glow-icon {
+      @apply hover:drop-shadow-[0_0_10px_rgba(59,130,246,0.6)];
+    }
+  
+    .glow-profile {
+      @apply hover:drop-shadow-[0_0_10px_rgba(236,72,153,0.6)];
+    }
+  
+    .animate-glow {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    .input {
+      @apply w-full px-4 py-2 rounded bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500;
+    }
+    
+   
+  }
