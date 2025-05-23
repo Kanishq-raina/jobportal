@@ -45,7 +45,7 @@ const SetPassword = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/set-password", {
+      const res = await fetch("https://jobportal-xqgm.onrender.com/api/auth/set-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, username, password }),
