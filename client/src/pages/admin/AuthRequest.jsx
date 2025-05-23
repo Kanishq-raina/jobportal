@@ -16,7 +16,7 @@ const AuthRequest = () => {
  const fetchRequests = async () => {
    try {
      setLoading(true);
-     const res = await fetch("http://localhost:5000/api/admin/authrequests", {
+     const res = await fetch("https://jobportal-xqgm.onrender.com/api/admin/authrequests", {
        headers: { Authorization: `Bearer ${token}` },
      });
      const data = await res.json();
@@ -39,7 +39,7 @@ const AuthRequest = () => {
  const handleApprove = async (id) => {
    try {
      const res = await fetch(
-       `http://localhost:5000/api/admin/authrequests/${id}/approve`,
+       `https://jobportal-xqgm.onrender.com/api/admin/authrequests/${id}/approve`,
        {
          method: "PATCH",
          headers: { Authorization: `Bearer ${token}` },
@@ -60,7 +60,7 @@ const AuthRequest = () => {
  const handleReject = async (id, feedback = "Rejected by admin") => {
    try {
      const res = await fetch(
-       `http://localhost:5000/api/admin/authrequests/${id}/reject`,
+       `https://jobportal-xqgm.onrender.com/api/admin/authrequests/${id}/reject`,
        {
          method: "PATCH",
          headers: {
@@ -85,7 +85,7 @@ const AuthRequest = () => {
  const handleDelete = async (id) => {
    try {
      const res = await fetch(
-       `http://localhost:5000/api/admin/authrequests/${id}`,
+       `https://jobportal-xqgm.onrender.com/api/admin/authrequests/${id}`,
        {
          method: "DELETE",
          headers: { Authorization: `Bearer ${token}` },
