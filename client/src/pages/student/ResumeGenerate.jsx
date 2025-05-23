@@ -59,7 +59,7 @@ const ResumeGenerate = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       const token = localStorage.getItem("studentToken");
-      const res = await fetch("http://localhost:5000/api/student/profile", {
+      const res = await fetch("https://jobportal-xqgm.onrender.com/api/student/profile", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -99,7 +99,7 @@ const ResumeGenerate = () => {
 
   const handlePreviewResume = async () => {
     const token = localStorage.getItem("studentToken");
-    const res = await fetch("http://localhost:5000/api/student/resume", {
+    const res = await fetch("https://jobportal-xqgm.onrender.com/api/student/resume", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -163,7 +163,7 @@ const ResumeGenerate = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:5000/api/student/resume", {
+      const res = await fetch("https://jobportal-xqgm.onrender.com/api/student/resume", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -182,7 +182,7 @@ const ResumeGenerate = () => {
       const formData = new FormData();
       formData.append("resume", blob, "resume.pdf");
 
-      const uploadRes = await fetch("http://localhost:5000/api/student/upload-resume", {
+      const uploadRes = await fetch("https://jobportal-xqgm.onrender.com/api/student/upload-resume", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
