@@ -9,7 +9,7 @@ const StudentFilterBar = ({ filters, setFilters }) => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/courses'); // Adjust path if needed
+        const res = await axios.get('https://jobportal-xqgm.onrender.com/api/courses'); // Adjust path if needed
         const map = {};
         res.data.forEach(course => {
           map[course.name] = course.branches;
