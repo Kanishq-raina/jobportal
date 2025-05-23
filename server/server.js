@@ -61,6 +61,9 @@ if (fs.existsSync(clientDistPath)) {
   console.warn('⚠️ Frontend not built. "client/dist" not found.');
 }
 
+app.listen(PORT,() =>{
+console.log(`${PORT}` );
+  });
 
 // ✅ Start server
 
