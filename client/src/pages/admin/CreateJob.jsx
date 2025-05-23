@@ -14,7 +14,7 @@ const CreateJob = () => {
  useEffect(() => {
    const fetchCourses = async () => {
      try {
-       const res = await fetch('http://localhost:5000/api/courses');
+       const res = await fetch('https://jobportal-xqgm.onrender.com/api/courses');
        const data = await res.json();
        setCourses(data);
      } catch (error) {
@@ -38,7 +38,7 @@ const CreateJob = () => {
 
 
    try {
-     const res = await fetch('http://localhost:5000/api/admin/create-job', {
+     const res = await fetch('https://jobportal-xqgm.onrender.com/api/admin/create-job', {
        method: 'POST',
        headers: { Authorization: `Bearer ${token}` },
        body: fd,
@@ -63,7 +63,7 @@ const CreateJob = () => {
 
 
    try {
-     const res = await fetch('http://localhost:5000/api/admin/upload-jobs-excel', {
+     const res = await fetch('https://jobportal-xqgm.onrender.com/api/admin/upload-jobs-excel', {
        method: 'POST',
        headers: { Authorization: `Bearer ${token}` },
        body: formData,
