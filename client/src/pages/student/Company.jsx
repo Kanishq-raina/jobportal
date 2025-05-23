@@ -64,10 +64,10 @@ const Company = () => {
 
 
      const [jobRes, studentRes] = await Promise.all([
-       fetch("http://localhost:5000/api/student/jobs", {
+       fetch("https://jobportal-xqgm.onrender.com/api/student/jobs", {
          headers: { Authorization: `Bearer ${token}` },
        }),
-       fetch("http://localhost:5000/api/student/profile", {
+       fetch("https://jobportal-xqgm.onrender.com/api/student/profile", {
          headers: { Authorization: `Bearer ${token}` },
        }),
      ]);
@@ -187,7 +187,7 @@ const Company = () => {
 
 
    try {
-     const res = await fetch(`http://localhost:5000/api/student/apply/${job._id}`, {
+     const res = await fetch(`https://jobportal-xqgm.onrender.com/api/student/apply/${job._id}`, {
        method: "POST",
        headers: { Authorization: `Bearer ${token}` },
      });
