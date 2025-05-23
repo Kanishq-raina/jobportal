@@ -28,10 +28,6 @@ const __dirname = path.dirname(__filename);
 await connectDB();
 
 // ✅ CORS
-app.use(cors({
-  origin: ['http://localhost:5173', 'http://172.20.10.3:5173'],
-  credentials: true
-}));
 
 // ✅ JSON parser
 app.use(express.json({ limit: '20mb' }));
