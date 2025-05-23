@@ -45,7 +45,7 @@ const StudentDetail = () => {
  const fetchStudents = async () => {
    try {
      const token = localStorage.getItem('adminToken');
-     const res = await fetch(`http://localhost:5000/api/admin/students?${buildQuery()}`, {
+     const res = await fetch(`https://jobportal-xqgm.onrender.com/api/admin/students?${buildQuery()}`, {
        headers: { Authorization: `Bearer ${token}` },
      });
      const data = await res.json();
@@ -65,7 +65,7 @@ const StudentDetail = () => {
    try {
      if (!id || id === 'undefined') return toast.error("Invalid student ID");
      const token = localStorage.getItem('adminToken');
-     const res = await fetch(`http://localhost:5000/api/admin/student/${id}`, {
+     const res = await fetch(`https://jobportal-xqgm.onrender.com/api/admin/student/${id}`, {
        headers: { Authorization: `Bearer ${token}` },
      });
      const data = await res.json();
@@ -114,7 +114,7 @@ const StudentDetail = () => {
 
    try {
      const token = localStorage.getItem("adminToken");
-     const res = await fetch('http://localhost:5000/api/admin/delete-students', {
+     const res = await fetch('https://jobportal-xqgm.onrender.com/api/admin/delete-students', {
        method: 'POST',
        headers: {
          'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ const StudentDetail = () => {
 
    try {
      const token = localStorage.getItem("adminToken");
-     const res = await fetch(`http://localhost:5000/api/admin/update-student/${updatedData._id}`, {
+     const res = await fetch(`https://jobportal-xqgm.onrender.com/api/admin/update-student/${updatedData._id}`, {
        method: "PUT",
        headers: {
          "Content-Type": "application/json",
@@ -179,7 +179,7 @@ const StudentDetail = () => {
 
    try {
      const token = localStorage.getItem("adminToken");
-     const res = await fetch("http://localhost:5000/api/admin/update-students-excel", {
+     const res = await fetch("https://jobportal-xqgm.onrender.com/api/admin/update-students-excel", {
        method: "POST",
        headers: {
          Authorization: `Bearer ${token}`,
