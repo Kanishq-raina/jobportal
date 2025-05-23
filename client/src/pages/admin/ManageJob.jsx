@@ -32,7 +32,7 @@ const ManageJob = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('adminToken');
-      const res = await fetch('http://localhost:5000/api/admin/jobs', {
+      const res = await fetch('https://jobportal-xqgm.onrender.com/api/admin/jobs', {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -42,7 +42,7 @@ const ManageJob = () => {
       const updatedJobs = await Promise.all(
         data.map(async (job) => {
           if (job.status === 'active' && new Date(job.deadline) < now) {
-            await fetch(`http://localhost:5000/api/admin/jobs/${job._id}`, {
+            await fetch(`https://jobportal-xqgm.onrender.com/api/admin/jobs/${job._id}`, {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ const ManageJob = () => {
     if (!window.confirm('Are you sure you want to delete this job?')) return;
     try {
       const token = localStorage.getItem('adminToken');
-      const res = await fetch(`http://localhost:5000/api/admin/jobs/${jobId}`, {
+      const res = await fetch(`https://jobportal-xqgm.onrender.com/api/admin/jobs/${jobId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -104,7 +104,7 @@ const ManageJob = () => {
 
 
       for (const jobId of selectedJobIds) {
-        await fetch(`http://localhost:5000/api/admin/jobs/${jobId}`, {
+        await fetch(`https://jobportal-xqgm.onrender.com/api/admin/jobs/${jobId}`, {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -136,7 +136,7 @@ const ManageJob = () => {
   const submitEditJob = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const res = await fetch(`http://localhost:5000/api/admin/jobs/${editingJob._id}`, {
+      const res = await fetch(`https://jobportal-xqgm.onrender.com/api/admin/jobs/${editingJob._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -183,7 +183,7 @@ const ManageJob = () => {
   const handleSendReminder = async (students) => {
     const token = localStorage.getItem("adminToken");
     try {
-      const res = await fetch("http://localhost:5000/api/admin/send-reminder-mail", {
+      const res = await fetch("https://jobportal-xqgm.onrender.com/api/admin/send-reminder-mail", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
