@@ -204,7 +204,7 @@ const isPending = (fieldKey) =>
 
                   {filePath ? (
                     <a
-                      href={`http://localhost:5000${filePath}`}
+                      href={`https://jobportal-xqgm.onrender.com${filePath}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`inline-flex gap-1 mt-2 ${glowBtn}`}
