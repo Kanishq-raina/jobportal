@@ -38,7 +38,7 @@ const StudentSettings = () => {
 
 
    try {
-     const credRes = await fetch("http://localhost:5000/api/student/credentials", {
+     const credRes = await fetch("https://jobportal-xqgm.onrender.com/api/student/credentials", {
        method: "PATCH",
        headers: {
          "Content-Type": "application/json",
