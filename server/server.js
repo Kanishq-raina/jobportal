@@ -28,7 +28,12 @@ const __dirname = path.dirname(__filename);
 await connectDB();
 
 // ✅ CORS
-
+app.use(cors({
+  origin: [
+    'https://jobportal-xqgm.onrender.com'
+    ],
+  credentials: true
+}));
 // ✅ JSON parser
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
