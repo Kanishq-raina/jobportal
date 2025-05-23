@@ -14,7 +14,7 @@ const StudentProfile = () => {
     const fetchStudent = async () => {
       const token = localStorage.getItem('adminToken');
       try {
-        const res = await fetch(`http://localhost:5000/api/admin/students/${id}`, {
+        const res = await fetch(`https://jobportal-xqgm.onrender.com/api/admin/students/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
