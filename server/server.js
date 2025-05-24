@@ -47,7 +47,8 @@ app.use('/api/admin', authRequestRoutes);
 app.use('/api/job', jobRoutes);
 app.use('/api/jobround', JobRoundRoutes);
 app.use('/api/contact', contactRoutes);
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static('/tmp')); // ✅ Works on Render
+
 
 // ✅ Serve static frontend files (after build)
 const clientDistPath = path.resolve(__dirname, '..','client', 'dist');
