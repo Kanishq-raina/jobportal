@@ -122,64 +122,60 @@ export const addSingleStudent = async (req, res) => {
 // ✅ Add bulk students
 export const addBulkStudents = async (req, res) => {
   const generateToken = () => crypto.randomBytes(32).toString("hex");
-
   try {
     const { students } = req.body;
-    if (!students || !Array.isArray(students)) {
-      return res.status(400).json({ message: "Invalid students data." });
-    }
-
     let added = 0;
     const errors = [];
 
     for (const s of students) {
       try {
-        // ✅ Basic validation
-        if (!s.email || !s.email.endsWith("@gmail.com")) {
-          errors.push({ email: s.email || 'N/A', reason: "Invalid email" });
+        // Normalize course and branch
+        const normalizedCourse = s.course?.toLowerCase().trim();
+        const normalizedBranch = s.branch?.toLowerCase().trim();
+
+        // Validate email
+        if (!s.email.endsWith("@gmail.com")) {
+          errors.push({ email: s.email, reason: "Invalid email" });
           continue;
         }
 
-        // ✅ Skip if already exists
+        // Skip if user already exists
         const existing = await User.findOne({ email: s.email });
-        if (existing) {
-          errors.push({ email: s.email, reason: "Email already exists" });
-          continue;
-        }
+        if (existing) continue;
 
-        // ✅ Check course and branch validity
-        const courseDoc = await Course.findOne({ name: s.course });
+        // Find course (case-insensitive)
+        const courseDoc = await Course.findOne({ name: new RegExp(`^${normalizedCourse}$`, 'i') });
         if (!courseDoc) {
           errors.push({ email: s.email, reason: "Invalid course" });
           continue;
         }
 
-        if (!courseDoc.branches.includes(s.branch)) {
+        // Validate branch inside course
+        const matchedBranch = courseDoc.branches.find(
+          (b) => b.toLowerCase().trim() === normalizedBranch
+        );
+        if (!matchedBranch) {
           errors.push({ email: s.email, reason: "Invalid branch for course" });
           continue;
         }
 
-        const name = s.lastName
-          ? `${s.firstName} ${s.lastName}`
-          : s.firstName;
-
+        const name = s.lastName ? `${s.firstName} ${s.lastName}` : s.firstName;
         const token = generateToken();
         const tokenExpiry = Date.now() + 1000 * 60 * 60 * 24;
 
-        // ✅ Create user
         const user = await User.create({
           name,
           email: s.email,
           role: "student",
+          username: s.email.split('@')[0], // ✅ Fix duplicate username issue
           resetToken: token,
           resetTokenExpiry: tokenExpiry,
         });
 
-        // ✅ Create student document
         await Student.create({
           user: user._id,
           course: courseDoc._id,
-          branch: s.branch,
+          branch: matchedBranch,
           cgpa: s.cgpa,
           semester: s.semester,
           backlogs: s.backlogs || 0,
@@ -188,26 +184,24 @@ export const addBulkStudents = async (req, res) => {
           twelfthPercent: s.twelfthPercent,
         });
 
-        // ✅ Send reset email
         const link = `${process.env.FRONTEND_URL}/set-password?token=${token}`;
         await sendStudentEmail(s.email, link);
 
         added++;
       } catch (err) {
-        console.error(`❌ Error adding ${s.email}:`, err.message);
-        errors.push({ email: s.email || 'N/A', reason: "Internal server error" });
+        console.error(`❌ Error adding ${s.email}:`, err);
+        errors.push({ email: s.email, reason: "Internal server error" });
       }
     }
 
-    res.status(201).json({
+    return res.status(200).json({
       message: "Bulk upload processed",
       count: added,
       errors,
     });
-
   } catch (err) {
-    console.error("Bulk student upload error:", err);
-    res.status(500).json({ message: "Server error during bulk upload" });
+    console.error("❌ Bulk student error:", err);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
