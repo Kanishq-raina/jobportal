@@ -110,13 +110,11 @@ router.post(
       const { type } = req.body; // Should be "10" or "12"
       const userId = req.user.id;
 
-
       const student = await Student.findOne({ user: userId });
       if (!student) return res.status(404).json({ message: "Student not found" });
 
-
+      // This is the URL path that will work with express.static('/uploads', express.static('/tmp'))
       const filePath = `/uploads/marksheets/${req.file.filename}`;
-
 
       if (type === "10") {
         student.tenthMarksheet = filePath;
@@ -126,17 +124,16 @@ router.post(
         return res.status(400).json({ message: "Invalid marksheet type" });
       }
 
-
       await student.save();
-
 
       res.status(200).json({ message: `${type}th Marksheet uploaded`, path: filePath });
     } catch (err) {
-      console.error("Marksheet upload error:", err);
+      console.error("❌ Marksheet upload error:", err);
       res.status(500).json({ message: "Failed to upload marksheet" });
     }
   }
 );
+
 
 
 export default router;
