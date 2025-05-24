@@ -168,13 +168,13 @@ const StudentView = ({ student, onClose, onSave }) => {
           {/* Files Section */}
           <div className="space-y-2 text-sm">
             {student.resumeLink && (
-              <p><strong>Resume:</strong> <button onClick={() => window.open(`http://localhost:5000${student.resumeLink}`, '_blank')} className="text-blue-500 underline">View</button></p>
+              <p><strong>Resume:</strong> <button onClick={() => window.open(`https://jobportal-xqgm.onrender.com${student.resumeLink}`, '_blank')} className="text-blue-500 underline">View</button></p>
             )}
             {student.tenthMarksheet && (
-              <p><strong>10th Marksheet:</strong> <button onClick={() => window.open(`http://localhost:5000${student.tenthMarksheet}`, '_blank')} className="text-blue-500 underline">View</button></p>
+              <p><strong>10th Marksheet:</strong> <button onClick={() => window.open(`https://jobportal-xqgm.onrender.com${student.tenthMarksheet}`, '_blank')} className="text-blue-500 underline">View</button></p>
             )}
             {student.twelfthMarksheet && (
-              <p><strong>12th Marksheet:</strong> <button onClick={() => window.open(`http://localhost:5000${student.twelfthMarksheet}`, '_blank')} className="text-blue-500 underline">View</button></p>
+              <p><strong>12th Marksheet:</strong> <button onClick={() => window.open(`https://jobportal-xqgm.onrender.com${student.twelfthMarksheet}`, '_blank')} className="text-blue-500 underline">View</button></p>
             )}
           </div>
 
