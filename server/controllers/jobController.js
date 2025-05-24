@@ -289,7 +289,15 @@ export const uploadJobsFromExcel = async (req, res) => {
 
 export const getAllJobs = async (req, res) => {
   try {
+    // ✅ Step 1: Update expired jobs before returning list
+    await Job.updateMany(
+      { status: "active", deadline: { $lt: new Date() } },
+      { $set: { status: "inactive" } }
+    );
+
+    // ✅ Step 2: Fetch updated jobs list
     const jobs = await Job.find().sort({ createdAt: -1 });
+
     res.status(200).json(jobs);
   } catch (error) {
     console.error('Error fetching jobs:', error);
@@ -338,15 +346,12 @@ export const getJobApplicants = async (req, res) => {
   try {
     const { id: jobId } = req.params;
 
-
     // Fetch all applications for this job with roundStatus
     const applications = await Application.find({ job: jobId })
       .select('status student roundStatus')
       .populate('student', 'name email phone course branch semester');
 
-
     const appliedUserIds = applications.map(app => app.student._id.toString());
-
 
     // Fetch all students and their user info
  const students = await Student.find()
@@ -355,15 +360,11 @@ export const getJobApplicants = async (req, res) => {
   .lean();
 
 
-
-
     const merged = students.map((s) => {
       const applied = appliedUserIds.includes(s.user._id.toString());
       const matchingApplication = applications.find(app => app.student._id.toString() === s.user._id.toString());
 
-
       const isFinalSelected = matchingApplication?.roundStatus?.final === 'selected';
-
 
       return {
         _id: s._id,
@@ -382,9 +383,19 @@ export const getJobApplicants = async (req, res) => {
         selectedInFinalRound: isFinalSelected
       };
     });
+    
+  const totalStudents = students.length;
+    const studentsApplied = appliedUserIds.length;
+    const studentsNotApplied = totalStudents - studentsApplied;
 
-
-    res.status(200).json(merged);
+    res.status(200).json({
+      applicants: merged,
+      stats: {
+        totalStudents,
+        studentsApplied,
+        studentsNotApplied
+      }
+    });
   } catch (error) {
     console.error("❌ Error fetching applicants:", error);
     res.status(500).json({ message: "Error fetching applicants" });
