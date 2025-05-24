@@ -62,20 +62,29 @@ const CreateJob = () => {
    formData.append('excelFile', excelFile);
 
 
-   try {
-     const res = await fetch('https://jobportal-xqgm.onrender.com/api/admin/upload-jobs-excel', {
-       method: 'POST',
-       headers: { Authorization: `Bearer ${token}` },
-       body: formData,
-     });
-     const data = await res.json();
-     res.ok
-       ? toast.success(`${data.createdCount} jobs uploaded`)
-       : toast.error(data.message || 'Excel upload failed');
-   } catch (err) {
-     console.error(err);
-     toast.error('Excel upload failed');
-   }
+ try {
+  const res = await fetch('https://jobportal-xqgm.onrender.com/api/admin/upload-jobs-excel', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData,
+  });
+
+  let data = {};
+  try {
+    data = await res.json(); // Safely try to parse JSON
+  } catch (jsonErr) {
+    console.warn("⚠️ Could not parse JSON response", jsonErr);
+  }
+
+  if (res.ok) {
+    toast.success(`${data.createdCount || 0} jobs uploaded`);
+  } else {
+    toast.error(data.message || "Job upload failed");
+  }
+} catch (err) {
+  console.error("❌ Excel upload network/server error:", err);
+  toast.error("Network or server error");
+}
  };
 
 return (
