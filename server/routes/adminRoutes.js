@@ -33,7 +33,7 @@ const router = express.Router();
 // @route GET /api/admin/profile
 router.get('/profile', verifyToken, getAdminProfile);
 router.post('/add-student', verifyToken, addSingleStudent);
-router.post('/add-students-bulk', verifyToken, addBulkStudents);
+router.post('/add-students-bulk', verifyToken, uploadExcel.single("excel"), addBulkStudents);
 router.get('/students',verifyToken,getAllStudents);
 router.post('/send-mail', verifyToken, sendMailToStudents);
 router.post('/create-job', verifyToken,uploadLogo.single('logo'), createJob);
