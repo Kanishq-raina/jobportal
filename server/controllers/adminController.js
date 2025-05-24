@@ -121,22 +121,14 @@ export const addSingleStudent = async (req, res) => {
 
 // ✅ Add bulk students
 export const addBulkStudents = async (req, res) => {
+  const generateToken = () => crypto.randomBytes(32).toString("hex");
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: "Excel file missing" });
-    }
-
-    const workbook = xlsx.readFile(req.file.path);
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const students = xlsx.utils.sheet_to_json(sheet);
-
-    const generateToken = () => crypto.randomBytes(32).toString("hex");
-
+    const { students } = req.body; // ✅ You're receiving parsed JSON from frontend
     let added = 0;
     const errors = [];
 
     for (const s of students) {
-      if (!s.email || !s.email.endsWith("@gmail.com")) {
+      if (!s.email.endsWith("@gmail.com")) {
         errors.push({ email: s.email, reason: "Invalid email" });
         continue;
       }
@@ -159,13 +151,14 @@ export const addBulkStudents = async (req, res) => {
       const token = generateToken();
       const tokenExpiry = Date.now() + 1000 * 60 * 60 * 24;
 
-      const user = new User({
+      const user = await User({
         name,
         email: s.email,
         role: "student",
         resetToken: token,
         resetTokenExpiry: tokenExpiry,
       });
+
       await user.save();
 
       await Student.create({
@@ -186,8 +179,6 @@ export const addBulkStudents = async (req, res) => {
       added++;
     }
 
-    fs.unlinkSync(req.file.path); // ✅ Clean up uploaded file
-
     res.status(201).json({
       message: "Bulk upload processed",
       count: added,
@@ -198,6 +189,7 @@ export const addBulkStudents = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 export const getAllStudents = async (req, res) => {
   try {
