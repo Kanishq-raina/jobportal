@@ -82,7 +82,7 @@ export const addSingleStudent = async (req, res) => {
     const tokenExpiry = Date.now() + 1000 * 60 * 60 * 24; // 24 hours
 
 
-    const user = await User.create({
+    const user = await User({
       name,
       email,
       role: "student",
@@ -90,6 +90,7 @@ export const addSingleStudent = async (req, res) => {
       resetTokenExpiry: tokenExpiry,
     });
 
+    await user.save();
 
     const student = await Student.create({
       user: user._id,
@@ -156,7 +157,7 @@ export const addBulkStudents = async (req, res) => {
       const tokenExpiry = Date.now() + 1000 * 60 * 60 * 24;
 
 
-      const user = await User.create({
+      const user = await User({
         name,
         email: s.email,
         role: "student",
@@ -164,7 +165,8 @@ export const addBulkStudents = async (req, res) => {
         resetTokenExpiry: tokenExpiry,
       });
 
-
+      await user.save();
+      
       await Student.create({
         user: user._id,
         course: courseDoc._id,
