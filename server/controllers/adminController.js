@@ -121,23 +121,28 @@ export const addSingleStudent = async (req, res) => {
 
 // ✅ Add bulk students
 export const addBulkStudents = async (req, res) => {
-  const generateToken = () => crypto.randomBytes(32).toString("hex");
   try {
-    const { students } = req.body;
+    if (!req.file) {
+      return res.status(400).json({ message: "Excel file missing" });
+    }
+
+    const workbook = xlsx.readFile(req.file.path);
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const students = xlsx.utils.sheet_to_json(sheet);
+
+    const generateToken = () => crypto.randomBytes(32).toString("hex");
+
     let added = 0;
     const errors = [];
 
-
     for (const s of students) {
-      if (!s.email.endsWith("@gmail.com")) {
+      if (!s.email || !s.email.endsWith("@gmail.com")) {
         errors.push({ email: s.email, reason: "Invalid email" });
         continue;
       }
 
-
       const existing = await User.findOne({ email: s.email });
       if (existing) continue;
-
 
       const courseDoc = await Course.findOne({ name: s.course });
       if (!courseDoc) {
@@ -145,28 +150,24 @@ export const addBulkStudents = async (req, res) => {
         continue;
       }
 
-
       if (!courseDoc.branches.includes(s.branch)) {
         errors.push({ email: s.email, reason: "Invalid branch for course" });
         continue;
       }
 
-
       const name = s.lastName ? `${s.firstName} ${s.lastName}` : s.firstName;
       const token = generateToken();
       const tokenExpiry = Date.now() + 1000 * 60 * 60 * 24;
 
-
-      const user = await User({
+      const user = new User({
         name,
         email: s.email,
         role: "student",
         resetToken: token,
         resetTokenExpiry: tokenExpiry,
       });
-
       await user.save();
-      
+
       await Student.create({
         user: user._id,
         course: courseDoc._id,
@@ -179,14 +180,13 @@ export const addBulkStudents = async (req, res) => {
         twelfthPercent: s.twelfthPercent,
       });
 
-
       const link = `${process.env.FRONTEND_URL}/set-password?token=${token}`;
       await sendStudentEmail(s.email, link);
-
 
       added++;
     }
 
+    fs.unlinkSync(req.file.path); // ✅ Clean up uploaded file
 
     res.status(201).json({
       message: "Bulk upload processed",
@@ -198,7 +198,6 @@ export const addBulkStudents = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 export const getAllStudents = async (req, res) => {
   try {
