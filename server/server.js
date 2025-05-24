@@ -24,19 +24,24 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ Connect to DB
+// ✅ Connect to MongoDB
 await connectDB();
 
-// ✅ CORS
+// ✅ Enable CORS for frontend
 app.use(cors({
   origin: [
     'https://jobportal-xqgm.onrender.com'
-    ],
+  ],
   credentials: true
 }));
-// ✅ JSON parser
+
+// ✅ Body parsers
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+
+// ✅ Serve uploaded files from /tmp as /uploads
+app.use('/uploads', express.static('/tmp'));
+
 
 // ✅ API Routes
 app.use('/api', courseRoutes);
@@ -47,25 +52,22 @@ app.use('/api/admin', authRequestRoutes);
 app.use('/api/job', jobRoutes);
 app.use('/api/jobround', JobRoundRoutes);
 app.use('/api/contact', contactRoutes);
-app.use('/uploads', express.static('/tmp')); // ✅ Works on Render
 
+// ✅ Serve frontend (Vite build)
+const clientDistPath = path.resolve(__dirname, '..', 'client', 'dist');
 
-// ✅ Serve static frontend files (after build)
-const clientDistPath = path.resolve(__dirname, '..','client', 'dist');
 if (fs.existsSync(clientDistPath)) {
   app.use(express.static(clientDistPath));
 
-  // This will only match non-API routes (like '/', '/about', etc.)
-  app.get(/^\/(?!api).*/, (_, res) => {
+  // ✅ Catch-all: serve React app only for non-API and non-upload routes
+  app.get(/^\/(?!api|uploads).*/, (_, res) => {
     res.sendFile(path.join(clientDistPath, 'index.html'));
   });
 } else {
-  console.warn('⚠️ Frontend not built. "client/dist" not found.');
+  console.warn('⚠️ Frontend not built. "client/dist" folder not found.');
 }
 
-app.listen(PORT,() =>{
-console.log(`${PORT}` );
-  });
-
 // ✅ Start server
-
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
