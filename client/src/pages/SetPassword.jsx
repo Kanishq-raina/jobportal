@@ -77,7 +77,7 @@ const SetPassword = () => {
             <p className="text-green-600 text-sm">{success}</p>
             <button
               type="button"
-              onClick={() => (window.location.href = "http://localhost:5173/")}
+              onClick={() => (window.location.href = "https://jobportal-xqgm.onrender.com/")}
               className="bg-green-600 text-white w-full py-2 rounded hover:bg-green-700 mt-2"
             >
               Go to Login
