@@ -70,30 +70,29 @@ router.get('/resume/score/:jobId', verifyToken, scoreResumeForStudent);
 router.post("/upload-resume", verifyToken, uploadResume.single("resume"), async (req, res) => {
   try {
     const userId = req.user.id;
-    const filePath = `/uploads/resumes/${req.file.filename}`;
-
 
     const student = await Student.findOne({ user: userId });
     if (!student) return res.status(404).json({ message: "Student not found" });
 
-
     // Delete old resume if exists
     if (student.resumeLink) {
-      const oldPath = path.join(process.cwd(), student.resumeLink);
-      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+      try {
+        await fs.promises.unlink(student.resumeLink);
+      } catch (err) {
+        console.warn("Old resume not found or already deleted");
+      }
     }
 
-
-    student.resumeLink = filePath; // ✅ Correct field
+    student.resumeLink = req.file.path; // ✅ Absolute path that exists even on Render's /tmp
     await student.save();
 
-
-    res.status(200).json({ message: "Resume uploaded", path: filePath });
+    res.status(200).json({ message: "Resume uploaded", path: req.file.path });
   } catch (err) {
     console.error("Resume upload error:", err);
     res.status(500).json({ message: "Failed to upload resume" });
   }
 });
+
 // Add this line
 // server/routes/student.js
 
