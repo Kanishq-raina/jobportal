@@ -11,7 +11,12 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     phone: { type: String, default: "" },
     avatar: { type: String, default: "" },
+
+    resetToken: { type: String },
+    resetTokenExpiry: { type: Date },
   },
+  
+  
   {
     timestamps: true,
     toObject: { virtuals: true },
