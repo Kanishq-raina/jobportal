@@ -770,6 +770,42 @@ export const sendReminderMailToNonApplicants = async (req, res) => {
   }
 };
 
+export const getDashboardMetrics = async (req, res) => {
+  try {
+    const totalJobs = await Job.countDocuments();
+    const activeJobs = await Job.countDocuments({ status: "active" });
+    const completedJobs = await Job.countDocuments({ status: "taken" });
+    const inProgressJobs = await Job.countDocuments({ status: "inactive" });
+
+    const studentUsers = await User.find({ role: "student" });
+    const studentUserIds = studentUsers.map((u) => u._id.toString());
+
+    const appliedUserIds = await Application.distinct("student");
+    const appliedUserIdStrings = appliedUserIds.map((id) => id.toString());
+
+    const matched = studentUserIds.filter((id) => appliedUserIdStrings.includes(id));
+    const notMatched = studentUserIds.filter((id) => !appliedUserIdStrings.includes(id));
+
+    // ✅ NEW: Count of students selected in final round
+    const studentsSelected = await Application.countDocuments({
+      "roundStatus.final": "selected"
+    });
+
+    return res.json({
+      totalJobs,
+      activeJobs,
+      completedJobs,
+      inProgressJobs,
+      totalStudents: studentUserIds.length,
+      studentsApplied: matched.length,
+      studentsNotApplied: notMatched.length,
+      studentsSelected // ✅ Include in response
+    });
+  } catch (err) {
+    console.error("❌ Dashboard metrics error:", err);
+    res.status(500).json({ message: "Failed to fetch dashboard metrics" });
+  }
+};
 
 
 
