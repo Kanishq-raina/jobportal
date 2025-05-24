@@ -5,7 +5,6 @@ import StudentFilterBar from './StudentFilterBar';
 import * as XLSX from "xlsx";
 import JobRoundManager from "./JobRoundManager";
 
-
 const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
   const [applicants, setApplicants] = useState([]);
   const [selectedApplicants, setSelectedApplicants] = useState([]);
@@ -17,9 +16,6 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
 
 
 
-
-
-
   const [filters, setFilters] = useState({
     name: '', email: '', cgpa: '', minCgpa: '', maxCgpa: '',
     backlogs: '', minBacklogs: '', maxBacklogs: '',
@@ -27,38 +23,31 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
     branch: '', sortBy: '',
   });
 
-
   const tableRef = useRef();
  const finalTableRef = useRef(); // ✅ Add this
-
 
  const fetchApplicants = async () => {
   try {
     const token = localStorage.getItem('adminToken');
-    const res = await fetch(`https://jobportal-xqgm.onrender.com/api/admin/jobs/${job._id}/applicants`, {
+    const res = await fetch(`http://localhost:5000/api/admin/jobs/${job._id}/applicants`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-
 
     if (!res.ok) {
       const errorData = await res.json();
       throw new Error(errorData.message || "Error fetching applicants");
     }
 
-
     const data = await res.json();
 
 
-
-
     if (job.status === 'taken') {
-      const finalSelected = data.filter((a) => a.selectedInFinalRound);
+      const finalSelected = data.applicants.filter((a) => a.selectedInFinalRound);
       setApplicants(finalSelected);
       setFinalSelectedStudents(finalSelected);
     } else {
-      setApplicants(data);
+      setApplicants(data.applicants);
     }
-
 
     setSelectedApplicants([]);
   } catch (error) {
@@ -68,19 +57,15 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
 };
 
 
-
-
   useEffect(() => {
     fetchApplicants();
   }, [job]);
-
 
   const toggleSelectApplicant = (id) => {
     setSelectedApplicants((prev) =>
       prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id]
     );
   };
-
 
   const filteredApplicants = applicants
     .filter((student) => {
@@ -93,11 +78,9 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
       const matchesName = student.name?.toLowerCase().includes(filters.name.toLowerCase()) ?? false;
       const matchesEmail = student.email?.toLowerCase().includes(filters.email.toLowerCase()) ?? false;
 
-
       const cgpa = parseFloat(student.cgpa) || 0;
       const minCgpa = parseFloat(filters.minCgpa) || 0;
       const maxCgpa = parseFloat(filters.maxCgpa) || 10;
-
 
       const semester = parseInt(student.semester) || 1;
       const minSemester = parseInt(filters.minSemester) || 1;
@@ -106,12 +89,10 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
       const minBacklogs = parseInt(filters.minBacklogs) || 0;
       const maxBacklogs = parseInt(filters.maxBacklogs) || 50;
 
-
       const matchesCgpa = cgpa >= minCgpa && cgpa <= maxCgpa;
       const matchesSemester = semester >= minSemester && semester <= maxSemester;
       const matchesBranch = filters.branch ? student.branch === filters.branch : true;
       const matchesBacklogs = backlogs >= minBacklogs && backlogs <= maxBacklogs;
-
 
       return matchesName && matchesEmail && matchesCgpa && matchesSemester && matchesBranch && matchesBacklogs;
     }).sort((a, b) => {
@@ -121,18 +102,15 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
       return 0;
     });
 
-
   const handleImportExcel = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
 
     try {
       const data = await file.arrayBuffer();
       const workbook = XLSX.read(data);
       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
       const jsonData = XLSX.utils.sheet_to_json(worksheet);
-
 
       setApplicants((prev) => {
         const updated = [...prev];
@@ -147,14 +125,12 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
         return updated;
       });
 
-
       toast.success("Excel imported successfully!");
     } catch (err) {
       console.error("❌ Import failed:", err);
       toast.error("Failed to import Excel");
     }
   };
-
 
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-start z-50 p-4 overflow-y-auto">
@@ -163,9 +139,7 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
           Applicants for {job.title}
         </h3>
 
-
         <StudentFilterBar filters={filters} setFilters={setFilters} />
-
 
       {job.status !== 'taken' && (
   <div className="flex gap-2 mb-4">
@@ -191,8 +165,6 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
 )}
 
 
-
-
        <div className="flex flex-wrap gap-2 mb-4">
   {job.status !== 'taken' && (
     <>
@@ -202,7 +174,6 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
       >
         Select All
       </button>
-
 
       <DownloadTableExcel
         filename="Applicants"
@@ -216,14 +187,11 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
     </>
   )}
 
-
  {job.status === 'inactive' && (
   <div className="w-full flex justify-start mt-2">
     <JobRoundManager jobId={job._id} />
   </div>
 )}
-
-
 
 
   {job.status === 'active' && applicantFilter === 'not_applied' && filteredApplicants.length > 0 && (
@@ -241,7 +209,6 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
     </button>
   )}
 
-
   {job.status === 'taken' && (
     <>
       <DownloadTableExcel
@@ -254,7 +221,6 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
         </button>
       </DownloadTableExcel>
 
-
       <button
         onClick={() => setShowFinalList(!showFinalList)}
         className="px-4 py-2 bg-blue-600 text-white rounded"
@@ -264,7 +230,6 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
     </>
   )}
 </div>
-
 
 {job.status !== 'taken' && (
         <div className="overflow-x-auto">
@@ -349,13 +314,11 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
           </div>
         )}
 
-
         <div className="flex justify-end mt-4">
           <button onClick={onClose} className="px-4 py-2 bg-gray-600 text-white rounded">
             Close
           </button>
         </div>
-
 
         {selectedStudent && (
           <div className="fixed inset-0 bg-black/50 z-50 flex justify-center items-center p-4">
@@ -438,15 +401,8 @@ const ApplicantsModal = ({ job, onClose, onSendReminder }) => {
   </tbody>
 </table>
 
-
     </div>
   );
 };
 
-
 export default ApplicantsModal;
-
-
-
-
-
