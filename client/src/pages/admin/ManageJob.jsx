@@ -217,7 +217,7 @@ const ManageJob = () => {
 
           {/* Status Buttons */}
           <div className="flex gap-4 mb-8">
-            {['inactive', 'taken', 'active'].map((status) => {
+            {['active', 'inactive', 'taken'].map((status) => {
               const statusLabel = {
                 inactive: 'Job In Process',
                 taken: 'Completed Jobs',
