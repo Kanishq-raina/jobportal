@@ -351,7 +351,10 @@ export const getJobApplicants = async (req, res) => {
       .select('status student roundStatus')
       .populate('student', 'name email phone course branch semester');
 
-    const appliedUserIds = applications.map(app => app.student._id.toString());
+const appliedUserIds = applications
+  .filter(app => app.student && app.student._id)
+  .map(app => app.student._id.toString());
+
 
     // Fetch all students and their user info
  const students = await Student.find()
@@ -362,7 +365,10 @@ export const getJobApplicants = async (req, res) => {
 
     const merged = students.map((s) => {
       const applied = appliedUserIds.includes(s.user._id.toString());
-      const matchingApplication = applications.find(app => app.student._id.toString() === s.user._id.toString());
+ const matchingApplication = applications.find(app =>
+  app.student && app.student._id && app.student._id.toString() === s.user._id.toString()
+);
+
 
       const isFinalSelected = matchingApplication?.roundStatus?.final === 'selected';
 
