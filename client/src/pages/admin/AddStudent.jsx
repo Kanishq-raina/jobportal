@@ -7,7 +7,7 @@ import * as XLSX from 'xlsx';
 import clsx from 'clsx';
 
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://jobportal-xqgm.onrender.com';
+const API_BASE =  'https://jobportal-xqgm.onrender.com';
 
 
 const AddStudent = () => {
