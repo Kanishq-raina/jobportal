@@ -86,6 +86,8 @@ export const addSingleStudent = async (req, res) => {
       name,
       email,
       role: "student",
+      username: email.split('@')[0],
+
       resetToken: token,
       resetTokenExpiry: tokenExpiry,
     });
