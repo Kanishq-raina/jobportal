@@ -9,7 +9,8 @@ import Course from "../models/Course.js"
 import crypto from "crypto";
 import redis from "../utils/redisClient.js";
 import { sendOTPEmail } from "../utils/sendAdminOTPEmail.js";
-import { sendConfirmation } from "../utils/SendStudentEmailUpdateConfirmation.js";
+import { sendConfirmation } from "../utils/sendStudentEmailUpdateConfirmation.js";
+
 
 
 

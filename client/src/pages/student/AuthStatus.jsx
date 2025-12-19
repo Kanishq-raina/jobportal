@@ -18,7 +18,7 @@ const AuthStatus = () => {
 
 
      try {
-       const res = await fetch("http://localhost:5000/api/student/authrequests", {
+       const res = await fetch("https://jobportal-xqgm.onrender.com/api/student/authrequests", {
          headers: { Authorization: `Bearer ${token}` },
        });
 

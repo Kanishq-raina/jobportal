@@ -272,7 +272,7 @@ const AuthRequestTable = ({
                 <td>
                   {r.proof ? (
                     <a
-                      href={`http://localhost:5000/${r.proof}`}
+                      href={`https://jobportal-xqgm.onrender.com/${r.proof}`}
                       target="_blank"
                       rel="noreferrer"
                       className="text-blue-600 underline"

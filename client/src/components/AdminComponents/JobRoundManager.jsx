@@ -13,7 +13,7 @@ const RoundManager = ({ jobId }) => {
 
   const fetchRounds = async () => {
     const token = localStorage.getItem("adminToken");
-    const res = await fetch(`http://localhost:5000/api/jobround/${jobId}`, {
+    const res = await fetch(`https://jobportal-xqgm.onrender.com/api/jobround/${jobId}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
@@ -36,7 +36,7 @@ const RoundManager = ({ jobId }) => {
 
 
     const token = localStorage.getItem("adminToken");
-    const res = await fetch(`http://localhost:5000/api/jobround/upload/${jobId}/${roundType}`, {
+    const res = await fetch(`https://jobportal-xqgm.onrender.com/api/jobround/upload/${jobId}/${roundType}`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: formData
@@ -56,7 +56,7 @@ const RoundManager = ({ jobId }) => {
 
   const sendEmails = async (roundType) => {
     const token = localStorage.getItem("adminToken");
-    const res = await fetch(`http://localhost:5000/api/jobround/${jobId}/${roundType}/send-mails`, {
+    const res = await fetch(`https://jobportal-xqgm.onrender.com/api/jobround/${jobId}/${roundType}/send-mails`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
     });

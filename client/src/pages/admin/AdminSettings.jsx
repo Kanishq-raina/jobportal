@@ -49,7 +49,7 @@ const AdminSettings = () => {
 
 
    try {
-     const response = await fetch("http://localhost:5000/api/admin/credentials", {
+     const response = await fetch("https://jobportal-xqgm.onrender.com/api/admin/credentials", {
        method: "PATCH",
        headers: {
          "Content-Type": "application/json",

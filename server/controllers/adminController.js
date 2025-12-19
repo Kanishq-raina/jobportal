@@ -82,14 +82,17 @@ export const addSingleStudent = async (req, res) => {
     const tokenExpiry = Date.now() + 1000 * 60 * 60 * 24; // 24 hours
 
 
-    const user = await User.create({
+    const user = await User({
       name,
       email,
       role: "student",
+      username: email.split('@')[0],
+
       resetToken: token,
       resetTokenExpiry: tokenExpiry,
     });
 
+    await user.save();
 
     const student = await Student.create({
       user: user._id,
@@ -126,74 +129,81 @@ export const addBulkStudents = async (req, res) => {
     let added = 0;
     const errors = [];
 
-
     for (const s of students) {
-      if (!s.email.endsWith("@gmail.com")) {
-        errors.push({ email: s.email, reason: "Invalid email" });
-        continue;
+      try {
+        // Normalize course and branch
+        const normalizedCourse = s.course?.toLowerCase().trim();
+        const normalizedBranch = s.branch?.toLowerCase().trim();
+
+        // Validate email
+        if (!s.email.endsWith("@gmail.com")) {
+          errors.push({ email: s.email, reason: "Invalid email" });
+          continue;
+        }
+
+        // Skip if user already exists
+        const existing = await User.findOne({ email: s.email });
+        if (existing) continue;
+
+        // Find course (case-insensitive)
+        const courseDoc = await Course.findOne({ name: new RegExp(`^${normalizedCourse}$`, 'i') });
+        if (!courseDoc) {
+          errors.push({ email: s.email, reason: "Invalid course" });
+          continue;
+        }
+
+        // Validate branch inside course
+        const matchedBranch = courseDoc.branches.find(
+          (b) => b.toLowerCase().trim() === normalizedBranch
+        );
+        if (!matchedBranch) {
+          errors.push({ email: s.email, reason: "Invalid branch for course" });
+          continue;
+        }
+
+        const name = s.lastName ? `${s.firstName} ${s.lastName}` : s.firstName;
+        const token = generateToken();
+        const tokenExpiry = Date.now() + 1000 * 60 * 60 * 24;
+
+        const user = await User.create({
+          name,
+          email: s.email,
+          role: "student",
+          username: s.email.split('@')[0], // ✅ Fix duplicate username issue
+          resetToken: token,
+          resetTokenExpiry: tokenExpiry,
+        });
+
+        await Student.create({
+          user: user._id,
+          course: courseDoc._id,
+          branch: matchedBranch,
+          cgpa: s.cgpa,
+          semester: s.semester,
+          backlogs: s.backlogs || 0,
+          gapYears: s.gapYears || 0,
+          tenthPercent: s.tenthPercent,
+          twelfthPercent: s.twelfthPercent,
+        });
+
+        const link = `${process.env.FRONTEND_URL}/set-password?token=${token}`;
+        await sendStudentEmail(s.email, link);
+
+        added++;
+      } catch (err) {
+        console.error(`❌ Error adding ${s.email}:`, err);
+        errors.push({ email: s.email, reason: "Internal server error" });
       }
-
-
-      const existing = await User.findOne({ email: s.email });
-      if (existing) continue;
-
-
-      const courseDoc = await Course.findOne({ name: s.course });
-      if (!courseDoc) {
-        errors.push({ email: s.email, reason: "Invalid course" });
-        continue;
-      }
-
-
-      if (!courseDoc.branches.includes(s.branch)) {
-        errors.push({ email: s.email, reason: "Invalid branch for course" });
-        continue;
-      }
-
-
-      const name = s.lastName ? `${s.firstName} ${s.lastName}` : s.firstName;
-      const token = generateToken();
-      const tokenExpiry = Date.now() + 1000 * 60 * 60 * 24;
-
-
-      const user = await User.create({
-        name,
-        email: s.email,
-        role: "student",
-        resetToken: token,
-        resetTokenExpiry: tokenExpiry,
-      });
-
-
-      await Student.create({
-        user: user._id,
-        course: courseDoc._id,
-        branch: s.branch,
-        cgpa: s.cgpa,
-        semester: s.semester,
-        backlogs: s.backlogs || 0,
-        gapYears: s.gapYears || 0,
-        tenthPercent: s.tenthPercent,
-        twelfthPercent: s.twelfthPercent,
-      });
-
-
-      const link = `${process.env.FRONTEND_URL}/set-password?token=${token}`;
-      await sendStudentEmail(s.email, link);
-
-
-      added++;
     }
 
-
-    res.status(201).json({
+    return res.status(200).json({
       message: "Bulk upload processed",
       count: added,
       errors,
     });
   } catch (err) {
-    console.error("Bulk student error:", err);
-    res.status(500).json({ message: "Server error" });
+    console.error("❌ Bulk student error:", err);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -768,6 +778,42 @@ export const sendReminderMailToNonApplicants = async (req, res) => {
   }
 };
 
+export const getDashboardMetrics = async (req, res) => {
+  try {
+    const totalJobs = await Job.countDocuments();
+    const activeJobs = await Job.countDocuments({ status: "active" });
+    const completedJobs = await Job.countDocuments({ status: "taken" });
+    const inProgressJobs = await Job.countDocuments({ status: "inactive" });
+
+    const studentUsers = await User.find({ role: "student" });
+    const studentUserIds = studentUsers.map((u) => u._id.toString());
+
+    const appliedUserIds = await Application.distinct("student");
+    const appliedUserIdStrings = appliedUserIds.map((id) => id.toString());
+
+    const matched = studentUserIds.filter((id) => appliedUserIdStrings.includes(id));
+    const notMatched = studentUserIds.filter((id) => !appliedUserIdStrings.includes(id));
+
+    // ✅ NEW: Count of students selected in final round
+    const studentsSelected = await Application.countDocuments({
+      "roundStatus.final": "selected"
+    });
+
+    return res.json({
+      totalJobs,
+      activeJobs,
+      completedJobs,
+      inProgressJobs,
+      totalStudents: studentUserIds.length,
+      studentsApplied: matched.length,
+      studentsNotApplied: notMatched.length,
+      studentsSelected // ✅ Include in response
+    });
+  } catch (err) {
+    console.error("❌ Dashboard metrics error:", err);
+    res.status(500).json({ message: "Failed to fetch dashboard metrics" });
+  }
+};
 
 
 

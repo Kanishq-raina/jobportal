@@ -6,11 +6,12 @@ import express from "express";
 import Job from "../models/job.js";
 import Student from "../models/Student.js";
 import JobToken from "../models/JobToken.js"; // ✅ Add this
-
+import { getAllJobs } from "../controllers/jobController.js";
+import { getJobApplicants } from "../controllers/jobController.js";
 
 const router = express.Router();
 
-
+router.get("/", getAllJobs);
 // GET job from token
 router.get("/token/:token", async (req, res) => {
   const { token } = req.params;
@@ -36,7 +37,7 @@ router.get("/token/:token", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
+router.get("/applicants/:id", getJobApplicants);
 
 export default router;
 

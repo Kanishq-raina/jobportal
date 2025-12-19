@@ -13,6 +13,7 @@ import {
 } from '../controllers/adminController.js';
 import { sendReminderMailToNonApplicants } from "../controllers/adminController.js";
 
+import { getDashboardMetrics } from "../controllers/adminController.js";
 
 
 
@@ -52,6 +53,7 @@ router.post('/update-students-excel',verifyToken,uploadExcel.single("file"),upda
 router.post('/send-email-otp', verifyToken, sendAdminEmailOTP);
 router.post('/verify-email-otp', verifyToken, verifyAdminEmailOTP);
 router.post("/send-reminder-mail", verifyToken, sendReminderMailToNonApplicants);
+router.get("/dashboard-metrics", getDashboardMetrics);
 export default router;
 
 

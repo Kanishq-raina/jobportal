@@ -12,7 +12,7 @@ const ApplyToJob = () => {
 
   const fetchJob = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/job/token/${token}`);
+      const res = await fetch(`https://jobportal-xqgm.onrender.com/api/job/token/${token}`);
       const data = await res.json();
 
       if (!res.ok) {
@@ -31,7 +31,7 @@ const ApplyToJob = () => {
 
   const handleApply = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/student/apply/${job._id}`, {
+      const res = await fetch(`https://jobportal-xqgm.onrender.com/api/student/apply/${job._id}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${localStorage.getItem("studentToken")}` },
       });

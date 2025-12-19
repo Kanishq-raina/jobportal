@@ -50,7 +50,7 @@ const StudentDashboard = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("studentToken");
-        const res = await fetch("http://localhost:5000/api/student/profile", {
+        const res = await fetch("https://jobportal-xqgm.onrender.com/api/student/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -76,7 +76,7 @@ const StudentDashboard = () => {
 
 
     try {
-      const jobRes = await fetch("http://localhost:5000/api/student/jobs", {
+      const jobRes = await fetch("https://jobportal-xqgm.onrender.com/api/student/jobs", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const jobs = await jobRes.json();
@@ -86,7 +86,7 @@ const StudentDashboard = () => {
       const results = await Promise.all(
         eligibleJobs.map(async (job) => {
           try {
-            const res = await fetch(`http://localhost:5000/api/student/resume/score/${job._id}`, {
+            const res = await fetch(`https://jobportal-xqgm.onrender.com/api/student/resume/score/${job._id}`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             const data = await res.json();

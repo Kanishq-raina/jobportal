@@ -46,10 +46,10 @@ const [pendingRequests, setPendingRequests] = useState([]);
 
 
     const [profileRes, requestsRes] = await Promise.all([
-      fetch("http://localhost:5000/api/student/profile", {
+      fetch("https://jobportal-xqgm.onrender.com/api/student/profile", {
         headers: { Authorization: `Bearer ${token}` },
       }),
-      fetch("http://localhost:5000/api/student/requests", {
+      fetch("https://jobportal-xqgm.onrender.com/api/student/requests", {
         headers: { Authorization: `Bearer ${token}` },
       }),
     ]);
@@ -127,7 +127,7 @@ const [pendingRequests, setPendingRequests] = useState([]);
 
    try {
      const token = localStorage.getItem("studentToken");
-     const res = await fetch("http://localhost:5000/api/student/update-phone", {
+     const res = await fetch("https://jobportal-xqgm.onrender.com/api/student/update-phone", {
        method: "POST",
        headers: {
          "Content-Type": "application/json",
@@ -157,7 +157,7 @@ const [pendingRequests, setPendingRequests] = useState([]);
  const handleSendOtp = async () => {
    try {
      const token = localStorage.getItem("studentToken");
-     await fetch("http://localhost:5000/api/student/send-email-otp", {
+     await fetch("https://jobportal-xqgm.onrender.com/api/student/send-email-otp", {
        method: "POST",
        headers: {
          "Content-Type": "application/json",
@@ -184,7 +184,7 @@ const [pendingRequests, setPendingRequests] = useState([]);
    setVerifying(true);
    try {
      const token = localStorage.getItem("studentToken");
-     const res = await fetch("http://localhost:5000/api/student/verify-email-otp", {
+     const res = await fetch("https://jobportal-xqgm.onrender.com/api/student/verify-email-otp", {
        method: "POST",
        headers: {
          "Content-Type": "application/json",
@@ -225,7 +225,7 @@ const [pendingRequests, setPendingRequests] = useState([]);
 
    try {
      const token = localStorage.getItem("studentToken");
-     const res = await fetch("http://localhost:5000/api/student/upload-marksheet", {
+     const res = await fetch("https://jobportal-xqgm.onrender.com/api/student/upload-marksheet", {
        method: "POST",
        headers: { Authorization: `Bearer ${token}` },
        body: formData,
@@ -276,7 +276,7 @@ const [pendingRequests, setPendingRequests] = useState([]);
 
 
 
-     const res = await fetch("http://localhost:5000/api/student/auth-request", {
+     const res = await fetch("https://jobportal-xqgm.onrender.com/api/student/auth-request", {
        method: "POST",
        headers: { Authorization: `Bearer ${token}` },
        body: formData,

@@ -2,7 +2,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-const logoDir = path.join("uploads", "logos");
+const logoDir = path.join("/tmp", "logos");
 
 if (!fs.existsSync(logoDir)) {
   fs.mkdirSync(logoDir, { recursive: true });

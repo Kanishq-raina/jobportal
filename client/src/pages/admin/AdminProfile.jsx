@@ -39,7 +39,7 @@ const AdminProfile = () => {
        }
 
 
-       const response = await fetch('http://localhost:5000/api/admin/profile', {
+       const response = await fetch('https://jobportal-xqgm.onrender.com/api/admin/profile', {
          headers: {
            'Content-Type': 'application/json',
            Authorization: `Bearer ${token}`,
@@ -93,7 +93,7 @@ const AdminProfile = () => {
  const handlePhoneUpdate = async () => {
    const token = localStorage.getItem('adminToken');
    try {
-     const res = await fetch('http://localhost:5000/api/admin/update-phone', {
+     const res = await fetch('https://jobportal-xqgm.onrender.com/api/admin/update-phone', {
        method: 'PATCH',
        headers: {
          'Content-Type': 'application/json',
@@ -121,7 +121,7 @@ const AdminProfile = () => {
    try {
      const token = localStorage.getItem('adminToken');
      await axios.post(
-       'http://localhost:5000/api/admin/send-email-otp',
+       'https://jobportal-xqgm.onrender.com/api/admin/send-email-otp',
        { newEmail },
        {
          withCredentials: true,
@@ -148,7 +148,7 @@ const AdminProfile = () => {
    try {
      const token = localStorage.getItem('adminToken');
      await axios.post(
-       'http://localhost:5000/api/admin/verify-email-otp',
+       'https://jobportal-xqgm.onrender.com/api/admin/verify-email-otp',
        { otp },
        {
          withCredentials: true,

@@ -14,29 +14,33 @@ export const scoreResumeForStudent = async (req, res) => {
     const student = await Student.findOne({ user: req.user.id });
     const job = await Job.findById(req.params.jobId);
 
-
     if (!student || !student.resumeLink) {
       return res.status(400).json({ message: "Resume not uploaded yet." });
     }
-
 
     if (!job || !job.description) {
       return res.status(400).json({ message: "Job description not found." });
     }
 
+    // 🧠 Score based on file path (handle /tmp for Render)
+    const resumePath = path.isAbsolute(student.resumeLink)
+      ? student.resumeLink
+      : path.join(process.cwd(), student.resumeLink);
 
-    const score = await scoreResumeAgainstJob(student.resumeLink, job.description);
+    // ✅ Check if file exists
+    try {
+      await fs.access(resumePath);
+    } catch {
+      return res.status(404).json({ message: "Resume file not found on server." });
+    }
 
-
-    // 🔍 Parse resume text from PDF
-    const resumePath = path.join(process.cwd(), student.resumeLink);
+    // 🔍 Read and parse resume PDF
     const resumeBuffer = await fs.readFile(resumePath);
     const { text: resumeText } = await pdfParse(resumeBuffer);
 
-
-    // 🧠 Generate AI Feedback
+    // 📊 ATS Score + AI Feedback
+    const score = await scoreResumeAgainstJob(resumeText, job.description);
     const aiFeedback = await generateAIResumeFeedback(resumeText, job.description);
-
 
     res.json({ score, feedback: aiFeedback });
   } catch (err) {
