@@ -2,9 +2,7 @@ import { Redis } from '@upstash/redis'
 import dotenv from 'dotenv';
 dotenv.config();
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL ,
-});
+
 const redis = new Redis({
  url: process.env.REDIS_URL ,
 })
