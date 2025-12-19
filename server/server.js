@@ -29,9 +29,13 @@ await connectDB();
 
 // ✅ Enable CORS for frontend
 app.use(cors({
+<<<<<<< Updated upstream
   origin: [
     'https://jobportal-xqgm.onrender.com'
   ],
+=======
+  origin: ['http://localhost:5173','http://172.24.112.1:5173'],
+>>>>>>> Stashed changes
   credentials: true
 }));
 

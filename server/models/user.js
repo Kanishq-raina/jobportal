@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    username: { type: String, unique: true, sparse: true },
+    username: { type: String, unique: true, sparse: true,default: null },
     password: { type: String },
     role: { type: String, enum: ["admin", "student"], required: true },
     name: { type: String, required: true },

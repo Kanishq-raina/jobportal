@@ -10,7 +10,10 @@ import crypto from "crypto";
 import redis from "../utils/redisClient.js";
 import { sendOTPEmail } from "../utils/sendAdminOTPEmail.js";
 import { sendConfirmation } from "../utils/sendStudentEmailUpdateConfirmation.js";
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 
 
 
