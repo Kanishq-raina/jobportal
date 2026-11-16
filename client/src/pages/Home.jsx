@@ -55,7 +55,7 @@ const Home = () => {
       const response = await fetch("https://jobportal-xqgm.onrender.com/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({identifier: username, password }),
+        body: JSON.stringify({identifier: username, password ,role}),
       });
 
 
@@ -110,6 +110,7 @@ const Home = () => {
             <div className="z-10 text-center">
               <h2 className="text-3xl font-bold text-white group-hover:scale-110 group-hover:text-blue-400 transition duration-300">
                 Admin
+                
               </h2>
             </div>
             <div className="absolute inset-0 group-hover:brightness-125 group-hover:backdrop-blur-md transition duration-300" />
@@ -142,8 +143,35 @@ const Home = () => {
               <Dialog.Panel className="bg-white/30 dark:bg-gray-900/30 text-black dark:text-white p-8 rounded-3xl w-full max-w-md shadow-2xl border border-white/20 backdrop-blur-xl transition">
                 <Lottie animationData={loginAnim} loop className="h-40 mx-auto mb-4" />
                 <h2 className="text-2xl font-bold mb-4 text-center capitalize">
-                  Login as {role}
-                </h2>
+  Login as {role}
+</h2>
+
+{/* Demo Credentials Box */}
+<div className="mb-5 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center">
+
+  <p className="text-xs font-semibold tracking-wider text-gray-400 mb-2">
+    DEMO CREDENTIALS
+  </p>
+
+  <p className="text-sm text-gray-400">
+    Username:{" "}
+    <span className="font-semibold text-gray-200">
+      {role === "admin" ? "admin" : "student"}
+    </span>
+  </p>
+
+  <p className="text-sm text-gray-400">
+    Password:{" "}
+    <span className="font-semibold text-gray-200">
+      {role === "admin" ? "admin123" : "student123"}
+    </span>
+  </p>
+
+  <p className="mt-2 text-xs text-gray-500">
+    Enter the credentials displayed above to access the demo.
+  </p>
+
+</div>
 
 
                 <form onSubmit={handleLogin} className="space-y-4">
