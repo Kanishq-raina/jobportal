@@ -663,7 +663,7 @@ export const sendAdminEmailOTP = async (req, res) => {
 
 
   try {
-    await redis.setEx(`email-otp:${adminId}`, 600, JSON.stringify({ otp, newEmail }));
+    await redis.set(`email-otp:${adminId}`, 600, JSON.stringify({ otp, newEmail }));
     await sendOTPEmail(newEmail, otp);
     res.json({ message: 'OTP sent to new email' });
   } catch (error) {

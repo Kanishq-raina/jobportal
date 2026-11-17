@@ -526,7 +526,7 @@ export const sendStudentEmailOTP = async (req, res) => {
 
 
   try {
-    await redis.setEx(`student-email-otp:${studentId}`, 600, JSON.stringify({ otp, newEmail }));
+    await redis.set(`student-email-otp:${studentId}`, 600, JSON.stringify({ otp, newEmail }));
     await sendOTPEmail(newEmail, otp);
     res.json({ message: 'OTP sent to new email' });
   } catch (error) {
