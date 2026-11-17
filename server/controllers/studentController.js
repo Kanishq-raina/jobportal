@@ -556,7 +556,8 @@ export const verifyStudentEmailOTP = async (req, res) => {
 
 
 
-    const { otp: storedOtp, newEmail } = JSON.parse(data);
+    const { otp: storedOtp, newEmail } =
+  typeof data === "string" ? JSON.parse(data) : data;
 
 
 

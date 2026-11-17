@@ -705,7 +705,8 @@ export const verifyAdminEmailOTP = async (req, res) => {
 
 
 
-    const { otp: storedOtp, newEmail } = JSON.parse(data);
+    const { otp: storedOtp, newEmail } =
+  typeof data === "string" ? JSON.parse(data) : data;
     console.log("✅ OTP stored:", storedOtp, "| New email:", newEmail);
 
 
